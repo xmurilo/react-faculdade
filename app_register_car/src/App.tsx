@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import FormModal from './FormModal';
+import StatisticsModal from './StatisticsModal';
+import IDataUser from './Interfaces';
 import {
   AppBar,
   Box,
@@ -16,20 +18,13 @@ import {
   Typography,
 } from '@mui/material';
 
-interface IDataUser {
-  model: string;
-  mark: string;
-  year: number;
-  price: number;
-  photo: string;
-}
-
 const columnHead = ['Modelo', 'Marca', 'Ano', 'Preço', 'Foto'];
 export default function App() {
   const [searchInput, setSearchInput] = useState('');
   const [filteredDataUser, setFilteredDataUser] = useState<IDataUser[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [dataUser, setDataUser] = useState<IDataUser[]>([]);
+
   const showModal = () => setOpenModal(true);
   const hideModal = () => setOpenModal(false);
 
@@ -141,20 +136,8 @@ export default function App() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {!filteredDataUser &&
-                  dataUser.map(data => (
-                    <TableRow key={data.price}>
-                      <TableCell>{data.model}</TableCell>
-                      <TableCell>{data.mark}</TableCell>
-                      <TableCell>{data.year}</TableCell>
-                      <TableCell>{data.price}</TableCell>
-                      <TableCell>
-                        <img width={'100px'} src={data.photo} alt={data.model} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
                 {filteredDataUser.map(data => (
-                  <TableRow key={data.price}>
+                  <TableRow>
                     <TableCell>{data.model}</TableCell>
                     <TableCell>{data.mark}</TableCell>
                     <TableCell>{data.year}</TableCell>
@@ -168,6 +151,10 @@ export default function App() {
             </Table>
           </TableContainer>
         </Box>
+        {!filteredDataUser.length && (
+          <Typography variant='subtitle1'>Nenhum carro encontrado</Typography>
+        )}
+        <StatisticsModal dataUser={dataUser} />
       </Container>
     </>
   );

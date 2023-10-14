@@ -1,21 +1,7 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Box, Button, Container, Modal, TextField } from '@mui/material';
-
-type FormValues = {
-  model: string;
-  mark: string;
-  year: number;
-  price: number;
-  photo: string;
-};
-
-interface IDataUser {
-  model: string;
-  mark: string;
-  year: number;
-  price: number;
-  photo: string;
-}
+import IDataUser from './Interfaces';
+import FormValues from './Interfaces';
 
 interface Props {
   showModal: boolean;
@@ -28,8 +14,8 @@ const FormModal: React.FC<Props> = props => {
 
   const onSubmit: SubmitHandler<FormValues> = (data: IDataUser) => {
     props.getUserInputs(data);
-    reset();
     props.hideModal();
+    reset();
   };
 
   const styleModal = {
