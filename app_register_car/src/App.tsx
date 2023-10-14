@@ -27,7 +27,7 @@ interface IDataUser {
 const columnHead = ['Modelo', 'Marca', 'Ano', 'Preço', 'Foto'];
 export default function App() {
   const [searchInput, setSearchInput] = useState('');
-
+  const [filteredDataUser, setFilteredDataUser] = useState<IDataUser[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [dataUser, setDataUser] = useState<IDataUser[]>([]);
   const showModal = () => setOpenModal(true);
@@ -47,9 +47,13 @@ export default function App() {
       const filteredCars = dataUser.filter(item =>
         item.mark.toLowerCase().includes(searchInput.toLowerCase()),
       );
-      setDataUser(filteredCars);
+      // Não atualize dataUser diretamente, crie um novo estado para os carros filtrados
+      setFilteredDataUser(filteredCars);
+    } else {
+      // Se a caixa de pesquisa estiver vazia, volte para a lista original
+      setFilteredDataUser(dataUser);
     }
-  }, [searchInput, dataUser]);
+  }, [dataUser, searchInput]);
 
   return (
     <>
@@ -137,7 +141,19 @@ export default function App() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataUser.map(data => (
+                {!filteredDataUser &&
+                  dataUser.map(data => (
+                    <TableRow key={data.price}>
+                      <TableCell>{data.model}</TableCell>
+                      <TableCell>{data.mark}</TableCell>
+                      <TableCell>{data.year}</TableCell>
+                      <TableCell>{data.price}</TableCell>
+                      <TableCell>
+                        <img width={'100px'} src={data.photo} alt={data.model} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                {filteredDataUser.map(data => (
                   <TableRow key={data.price}>
                     <TableCell>{data.model}</TableCell>
                     <TableCell>{data.mark}</TableCell>
