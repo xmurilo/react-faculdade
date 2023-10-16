@@ -23,10 +23,14 @@ export default function App() {
   const [searchInput, setSearchInput] = useState("");
   const [filteredDataUser, setFilteredDataUser] = useState<IDataUser[]>([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openStatistics, setOpenStatistics] = useState(false);
   const [dataUser, setDataUser] = useState<IDataUser[]>([]);
 
   const showModal = () => setOpenModal(true);
   const hideModal = () => setOpenModal(false);
+
+  const showStatistics = () => setOpenStatistics(true);
+  const hideStatistics = () => setOpenStatistics(false);
 
   const getUserInputs = (newDataUser: IDataUser) => {
     setDataUser([...dataUser, newDataUser]);
@@ -110,13 +114,29 @@ export default function App() {
           <Button variant="contained" onClick={showModal}>
             Registrar Um Veiculo
           </Button>
+          <Button sx={{ mt: 3 }} variant="contained" onClick={showStatistics}>
+            Mostrar Estatisticas
+          </Button>
         </Box>
+        <Box>
+          <FormModal
+            getUserInputs={getUserInputs}
+            showModal={openModal}
+            hideModal={hideModal}
+          />
 
-        <FormModal
-          getUserInputs={getUserInputs}
-          showModal={openModal}
-          hideModal={hideModal}
-        />
+          {filteredDataUser.length == 0 ? (
+            <Typography variant="subtitle1" sx={{ color: "#f3f3f3" }}>
+              Nenhuma estatistica encontrado
+            </Typography>
+          ) : (
+            <StatisticsModal
+              hideStatistics={hideStatistics}
+              openStatistics={openStatistics}
+              dataUser={dataUser}
+            />
+          )}
+        </Box>
 
         <Box
           sx={{
@@ -163,13 +183,6 @@ export default function App() {
             </Table>
           </TableContainer>
         </Box>
-        {filteredDataUser.length == 0 ? (
-          <Typography variant="subtitle1" sx={{ color: "#f3f3f3" }}>
-            Nenhuma estatistica encontrado
-          </Typography>
-        ) : (
-          <StatisticsModal dataUser={dataUser} />
-        )}
       </Container>
     </>
   );
