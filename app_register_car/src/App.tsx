@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import FormModal from './FormModal';
-import StatisticsModal from './StatisticsModal';
-import IDataUser from './Interfaces';
+import { useState, useEffect } from "react";
+import FormModal from "./FormModal";
+import StatisticsModal from "./StatisticsModal";
+import IDataUser from "./Interfaces";
 import {
   AppBar,
   Box,
@@ -16,11 +16,11 @@ import {
   TableRow,
   TextField,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 
-const columnHead = ['Modelo', 'Marca', 'Ano', 'Preço', 'Foto'];
+const columnHead = ["Modelo", "Marca", "Ano", "Preço", "Foto"];
 export default function App() {
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   const [filteredDataUser, setFilteredDataUser] = useState<IDataUser[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [dataUser, setDataUser] = useState<IDataUser[]>([]);
@@ -30,17 +30,20 @@ export default function App() {
 
   const getUserInputs = (newDataUser: IDataUser) => {
     setDataUser([...dataUser, newDataUser]);
-    localStorage.setItem('dataUser', JSON.stringify([...dataUser, newDataUser]));
+    localStorage.setItem(
+      "dataUser",
+      JSON.stringify([...dataUser, newDataUser])
+    );
   };
 
   useEffect(() => {
-    const cars = localStorage.getItem('dataUser');
+    const cars = localStorage.getItem("dataUser");
     if (cars) {
       setDataUser(JSON.parse(cars));
     }
     if (searchInput) {
-      const filteredCars = dataUser.filter(item =>
-        item.mark.toLowerCase().includes(searchInput.toLowerCase()),
+      const filteredCars = dataUser.filter((item) =>
+        item.mark.toLowerCase().includes(searchInput.toLowerCase())
       );
       // Não atualize dataUser diretamente, crie um novo estado para os carros filtrados
       setFilteredDataUser(filteredCars);
@@ -53,22 +56,27 @@ export default function App() {
   return (
     <>
       <AppBar
-        position='relative'
+        position="relative"
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-evenly',
-          flexDirection: 'row',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-evenly",
+          flexDirection: "row",
         }}
       >
         <Box
-          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', columnGap: '5px' }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            columnGap: "5px",
+          }}
         >
-          <Box width={'50px'}>
+          <Box width={"50px"}>
             <img
-              width={'100%'}
-              src='https://cdn-icons-png.flaticon.com/512/3054/3054929.png'
-              alt=''
+              width={"100%"}
+              src="https://cdn-icons-png.flaticon.com/512/3054/3054929.png"
+              alt=""
             />
           </Box>
           <Typography>MotorsGladi</Typography>
@@ -77,73 +85,77 @@ export default function App() {
 
       <Container
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
-          height: '100vh',
-          mt: '50px',
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+          height: "100vh",
+          mt: "50px",
         }}
-        maxWidth='xl'
+        maxWidth="xl"
       >
         <Box
           sx={{
-            width: '400px',
-            backgroundColor: '#F3f3f3f3',
-            borderRadius: '16px',
-            textAlign: 'center',
-            padding: '10px',
-            marginBottom: '20px',
+            width: "400px",
+            backgroundColor: "#F3f3f3f3",
+            borderRadius: "16px",
+            textAlign: "center",
+            padding: "10px",
+            marginBottom: "20px",
           }}
         >
-          <Typography variant='h4' color={'Highlight'}>
+          <Typography variant="h4" color={"Highlight"}>
             Veiculos
           </Typography>
-          <Typography variant='subtitle1'>Lista de veiculos</Typography>
-          <Button variant='contained' onClick={showModal}>
+          <Typography variant="subtitle1">Lista de veiculos</Typography>
+          <Button variant="contained" onClick={showModal}>
             Registrar Um Veiculo
           </Button>
         </Box>
 
-        <FormModal getUserInputs={getUserInputs} showModal={openModal} hideModal={hideModal} />
+        <FormModal
+          getUserInputs={getUserInputs}
+          showModal={openModal}
+          hideModal={hideModal}
+        />
 
         <Box
           sx={{
-            backgroundColor: '#f3f3f3',
-            width: '400px',
-            padding: '20px',
-            marginBottom: '20px',
-            borderRadius: '16px',
+            backgroundColor: "#f3f3f3",
+            width: "400px",
+            padding: "20px",
+            marginBottom: "20px",
+            borderRadius: "16px",
           }}
         >
-          <Typography variant='subtitle1' color={'Highlight'}>
+          <Typography variant="subtitle1" color={"Highlight"}>
             Pesquisar Carro por Marca
           </Typography>
           <TextField
-            sx={{ width: '100%', marginBottom: '10px' }}
-            variant='standard'
+            sx={{ width: "100%", marginBottom: "10px" }}
+            variant="standard"
             value={searchInput}
-            onChange={e => setSearchInput(e.target.value)}
+            onChange={(e) => setSearchInput(e.target.value)}
           />
         </Box>
         <Box>
           <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  {columnHead.map(item => (
+                  {columnHead.map((item) => (
                     <TableCell key={item}>{item}</TableCell>
                   ))}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredDataUser.map(data => (
-                  <TableRow>
+                {filteredDataUser.map((data, index) => (
+                  <TableRow key={index}>
                     <TableCell>{data.model}</TableCell>
                     <TableCell>{data.mark}</TableCell>
                     <TableCell>{data.year}</TableCell>
                     <TableCell>{data.price}</TableCell>
                     <TableCell>
-                      <img width={'100px'} src={data.photo} alt={data.model} />
+                      <img width={"100px"} src={data.photo} alt={data.model} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -151,10 +163,13 @@ export default function App() {
             </Table>
           </TableContainer>
         </Box>
-        {!filteredDataUser.length && (
-          <Typography variant='subtitle1'>Nenhum carro encontrado</Typography>
+        {filteredDataUser.length == 0 ? (
+          <Typography variant="subtitle1" sx={{ color: "#f3f3f3" }}>
+            Nenhuma estatistica encontrado
+          </Typography>
+        ) : (
+          <StatisticsModal dataUser={dataUser} />
         )}
-        <StatisticsModal dataUser={dataUser} />
       </Container>
     </>
   );
