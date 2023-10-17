@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import FormModal from './FormModal';
-import StatisticsModal from './StatisticsModal';
+import FormModal from './ModalComponents/FormModal';
+import StatisticsModal from './ModalComponents/StatisticsModal';
 import IDataUser from './Interfaces';
 import { AppBar, Box, Button, Container, TextField, Typography } from '@mui/material';
 import Table from './Table/Table';
