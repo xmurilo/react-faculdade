@@ -3,7 +3,7 @@ import FormModal from './ModalComponents/FormModal';
 import StatisticsModal from './ModalComponents/StatisticsModal';
 import IDataUser from './Interfaces';
 import { AppBar, Box, Button, Container, TextField, Typography } from '@mui/material';
-import Table from './Table/Table';
+import Table from './TableComponent/Table';
 
 export default function App() {
   const [openModal, setOpenModal] = useState(false);
