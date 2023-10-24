@@ -21,9 +21,12 @@ function App() {
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
   const [editModal, setOpenEditModal] = useState(false);
-  const [editedTrip, setEditedTrip] = useState<DataUser>({} as DataUser);
 
   const [trip, setTrip] = useState<DataUser[]>([]);
+  const [editedTrip, setEditedTrip] = useState<DataUser>({} as DataUser);
+
+  const [searchInput, setSearchInput] = useState('');
+  const [filteredTrip, setFilteredTrip] = useState<DataUser[]>([]);
 
   const [modalDestiny, setModalDestiny] = useState('');
   const [modalDate, setModalDate] = useState('');
@@ -70,6 +73,21 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    const trips = localStorage.getItem('trip');
+    if (trips) {
+      setTrip(JSON.parse(trips));
+    }
+    if (searchInput) {
+      const tripsFiltered = trip.filter(trip =>
+        trip.destiny.toLowerCase().includes(searchInput.toLowerCase()),
+      );
+      setFilteredTrip(tripsFiltered);
+    } else {
+      setFilteredTrip(trip);
+    }
+  }, [searchInput, trip]);
+
   const handleOpen = (): void => {
     setOpenModal(true);
   };
@@ -114,7 +132,7 @@ function App() {
     }
   };
 
-  const listTrip = trip.map((trip, i) => (
+  const listTrip = filteredTrip.map((trip, i) => (
     <Card key={trip.id} sx={{ maxWidth: 345 }}>
       <CardMedia component='img' alt='green iguana' height='140' image={trip.photo} />
       <CardContent>
@@ -128,7 +146,7 @@ function App() {
           {trip.duration}
         </Typography>
         <Typography variant='body2' color='text.secondary'>
-          R$ {trip.price}
+          R$ {Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </Typography>
       </CardContent>
       <CardActions>
@@ -178,11 +196,36 @@ function App() {
     <>
       <ResponsiveAppBar />
       <Container maxWidth='xl'>
-        <Box>
-          <Button onClick={handleOpen} variant='contained'>
-            Cadrastar Roteiro
-          </Button>
+        <Box
+          sx={{
+            maxWidth: '600px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '100px',
+            margin: '10px auto auto auto ',
+
+            padding: '10px',
+            borderRadius: '16px',
+            backgroundColor: 'HighlightText',
+          }}
+        >
+          <Box>
+            <TextField
+              sx={{ width: '100%', marginBottom: '10px' }}
+              variant='standard'
+              label='Pesquisar local'
+              value={searchInput}
+              onChange={e => setSearchInput(e.target.value)}
+            />
+          </Box>
+          <Box>
+            <Button onClick={handleOpen} variant='contained'>
+              Cadrastar Roteiro
+            </Button>
+          </Box>
         </Box>
+
         <Modal open={openModal} onClose={() => setOpenModal(false)}>
           <Box sx={styleBoxModal}>
             <form
@@ -200,6 +243,7 @@ function App() {
                   id='standard-basic'
                   label='Destino'
                   variant='standard'
+                  required
                   sx={{ width: '100%' }}
                 />
                 <TextField
@@ -207,6 +251,7 @@ function App() {
                   id='standard-basic'
                   label='Data'
                   variant='standard'
+                  required
                   sx={{ width: '100%' }}
                 />
                 <TextField
@@ -214,6 +259,7 @@ function App() {
                   id='standard-basic'
                   label='Duração'
                   variant='standard'
+                  required
                   sx={{ width: '100%' }}
                 />
                 <TextField
@@ -221,6 +267,7 @@ function App() {
                   id='standard-basic'
                   label='Preço'
                   variant='standard'
+                  required
                   sx={{ width: '100%' }}
                 />
                 <TextField
@@ -229,6 +276,7 @@ function App() {
                   id='standard-basic'
                   label='Foto'
                   variant='standard'
+                  required
                   sx={{ width: '100%' }}
                 />
                 <TextField
@@ -236,6 +284,7 @@ function App() {
                   id='standard-basic'
                   label='Atrações'
                   variant='standard'
+                  required
                   sx={{ width: '100%' }}
                 />
               </Box>
@@ -245,7 +294,17 @@ function App() {
             </form>
           </Box>
         </Modal>
-        {listTrip}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 5,
+            flexWrap: 'wrap',
+            p: 5,
+          }}
+        >
+          {listTrip}
+        </Box>
         <Modal open={openModal2} onClose={() => setOpenModal2(false)}>
           <Box sx={styleBoxModal2}>
             <Box sx={styleBoxImg}>
@@ -265,7 +324,7 @@ function App() {
               {modalDuration}
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              R$ {modalPrice}
+              R$ {Number(modalPrice).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </Typography>
             <Typography variant='body2' color='text.secondary'>
               {modalAttractions}
@@ -276,40 +335,54 @@ function App() {
         {editModal && (
           <Modal open={true} onClose={() => setOpenEditModal(false)}>
             <Box sx={styleBoxModal}>
-              <h1>Editar Viagem</h1>
+              <Typography variant='h6' color='Highlight'>
+                Editar Viagem
+              </Typography>
               {editedTrip && (
-                <form onSubmit={handleSubmit(handleData)}>
+                <form
+                  onSubmit={handleSubmit(handleData)}
+                  style={{ display: 'flex', flexDirection: 'column', rowGap: '20px' }}
+                >
                   <TextField
+                    style={{ marginTop: '20px' }}
                     type='text'
                     name='destiny'
+                    variant='standard'
                     onChange={handleEditData}
                     defaultValue={editedTrip.destiny}
                   />
                   <TextField
                     type='text'
                     name='date'
+                    variant='standard'
                     onChange={handleEditData}
                     defaultValue={editedTrip.date}
                   />
                   <TextField
                     type='text'
                     name='duration'
+                    variant='standard'
                     onChange={handleEditData}
                     defaultValue={editedTrip.duration}
                   />
                   <TextField
                     type='text'
                     name='price'
+                    variant='standard'
                     onChange={handleEditData}
                     defaultValue={editedTrip.price}
                   />
                   <TextField
                     type='text'
                     name='photo'
+                    variant='standard'
                     onChange={handleEditData}
                     defaultValue={editedTrip.photo}
                   />
                   <Box>
+                    <Button sx={{marginRight:'10px'}} onClick={saveEditedData} variant='contained' type='submit'>
+                      Salvar
+                    </Button>
                     <Button
                       variant='contained'
                       color='error'
@@ -317,9 +390,6 @@ function App() {
                       onClick={() => setOpenEditModal(false)}
                     >
                       Cancelar
-                    </Button>
-                    <Button onClick={saveEditedData} variant='contained' type='submit'>
-                      Salvar
                     </Button>
                   </Box>
                 </form>
