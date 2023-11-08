@@ -2,7 +2,12 @@ import { IDados } from "../../public/filmes";
 import { dados } from "../../public/filmes";
 import { useState, useEffect } from "react";
 import CardFilm from "./CardFilme";
-const News: React.FC = () => {
+
+interface PropsNews {
+  addFilm: (title:string, price: number) => void 
+}
+
+const News: React.FC<PropsNews> = (props) => {
   const [filmes, setFilmes] = useState<IDados[]>([]);
 
   useEffect(() => {
@@ -18,6 +23,7 @@ const News: React.FC = () => {
       foto={filme.foto}
       preco={filme.preco}
       duracao={filme.duracao}
+      addFilm={props.addFilm}
     />
   ));
 
